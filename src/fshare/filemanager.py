@@ -31,7 +31,7 @@ class FileManager:
             file_created = datetime.fromtimestamp(os.path.getctime(f"{self.location}/{file}")).strftime("%Y/%m/%d %H:%M")
             file_size = self.getStrSize(f"{self.location}/{file}")
 
-            item = [file, self.location, file_created, file_size]
+            item = [file, self.location.replace('\\','/'), file_created, file_size]
             data.append(item)
         return data
 

@@ -33,7 +33,11 @@ def download_file(file):
     if (not fileManager.getFilePath(file)):
         return {}, 404
     else:
-        return send_file( fileManager.getFilePath(file), as_attachment=True, download_name=file )
+        # flask >2.0.0
+        try:
+            return send_file( fileManager.getFilePath(file), as_attachment=True, download_name=file )
+        except: # flask <2.0.0
+            return send_file( fileManager.getFilePath(file), as_attachment=True, attachment_filename=file )
 
 @app.route("/delete/<file>", methods=["GET"])
 def delete_file(file):
@@ -50,8 +54,9 @@ def index():
         fileManager.saveFile(request.files['file'].filename, data)
 
     files = fileManager.getFileData()
+    print(files)
 
-    data = render_page(static_path+"index.html", {"form_data": dumps({"data": files}) })
+    data = render_page(static_path+"index.html", {"form_data": dumps({"data": files}, ensure_ascii=False) })
 
     return data
 
